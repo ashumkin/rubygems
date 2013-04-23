@@ -1,0 +1,20 @@
+# -*- ruby -*-
+
+DEST='_dest'
+$version = `git describe`.chomp
+$version.gsub!(/^v|-.+$/, '')
+
+task :default do
+    puts "rubygems v#{$version}"
+    puts 'run "pack" task'
+end
+
+desc 'Prepares files in destdir'
+task :prepare do
+    sh 'ruby', 'setup.rb', '--destdir=' + DEST
+end
+
+desc 'Packs'
+task :pack do
+    sh "tar -C #{DEST} -v -c usr | bzip2 > rubygems-#{$version}-1.tar.bz2"
+end
